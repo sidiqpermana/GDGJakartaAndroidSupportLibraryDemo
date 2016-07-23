@@ -2,10 +2,13 @@ package com.nbs.gdgjakartaandroidsupportlibrarydemo;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,21 +38,36 @@ public class DemoNotificationActivity extends AppCompatActivity
     }
 
     private void showNotification(){
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-                builder.setStyle(new NotificationCompat.MessagingStyle("Me")
-                        .setConversationTitle("Scrum Meeting")
-                        .addMessage("Hi", System.currentTimeMillis(), "Taufan Arfianto")
-                        .addMessage("Meeting yuk", System.currentTimeMillis(), "Taufan Arfianto")
-                        .addMessage("Hayo", System.currentTimeMillis(), "Imam Muzakkir")
-                        .addMessage("Pagi ini ya", System.currentTimeMillis(), "Taufan Arfianto"))
+                builder
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setAutoCancel(true);
-        Notification notification = builder.build();
-        notification.defaults |= Notification.DEFAULT_SOUND;
-        notification.defaults |= Notification.DEFAULT_VIBRATE;
+                .setContentTitle("NBS Chat")
+                        .setContentText("Received Message")
+                        .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setContentIntent(resultPendingIntent)
+                .setStyle(new NotificationCompat.MessagingStyle("Me")
+                .setConversationTitle("Scrum Meeting")
+                .addMessage("Hi", System.currentTimeMillis(), "Taufan Arfianto")
+                .addMessage("Meeting yuk", System.currentTimeMillis(), "Taufan Arfianto")
+                .addMessage("Hayo", System.currentTimeMillis(), "Imam Muzakkir")
+                .addMessage("Pagi ini ya", System.currentTimeMillis(), "Taufan Arfianto"));
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notification);
+        notificationManager.notify(1, builder.build());
     }
 
     @Override

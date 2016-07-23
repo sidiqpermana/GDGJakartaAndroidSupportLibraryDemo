@@ -53,7 +53,15 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case 3:
+                VectorActivity.start(this);
+                break;
 
+            case 4:
+                NightModeActivity.start(this);
+                break;
+
+            case 5:
+                BottomSheetsActivity.start(this);
                 break;
 
         }
